@@ -20,7 +20,7 @@ def _status(root, file, relpath):
 
 def line_num(file):
     num = 0
-    with fileinput.input(files=(file,)) as f:
+    with fileinput.input(files=(file,), mode='rb') as f:
         for line in f:
             num += 1
     return num
@@ -91,7 +91,7 @@ if __name__ == '__main__':
     
     parser.add_argument("--path", help="path to detect, can be name of file or directory, default to current directory")
     parser.add_argument("--limit", type=int, help="limit the lines of output, this would implicily sort the output files by line number in decrease order")
-    parser.add_argument("--sort", choices=['increase', 'decrease'], help="sort files by line number of it, default in decrease order")
+    parser.add_argument("--sort", choices=['increase', 'decrease'], help="sort files by line number of it")
     parser.add_argument("--output", type=str, help="redirect output to file")
     
     args = parser.parse_args()
