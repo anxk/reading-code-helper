@@ -1,5 +1,6 @@
 import argparse
 import fileinput
+import fnmatch
 import os
 import os.path
 
@@ -7,9 +8,15 @@ import os.path
 _files = []
 
 
-def walk(path, callback):
+def glob_filter(path, pattern):
+    return fnmatch.fnmatch(path, pattern)
+
+
+def walk(path, callback, glob):
     for root, dirs, files in os.walk(path):
         for file in files:
+            if not glob_filter(file, glob):
+                continue
             callback(root, file, path)
 
 
@@ -26,8 +33,8 @@ def line_num(file):
     return num
 
 
-def status(path):
-    walk(path, _status)
+def status(path, glob):
+    walk(path, _status, glob)
 
 
 def output(sort:str, limit:int) -> str:
@@ -93,13 +100,14 @@ if __name__ == '__main__':
     parser.add_argument("--limit", type=int, help="limit the lines of output, this would implicily sort the output files by line number in decrease order")
     parser.add_argument("--sort", choices=['increase', 'decrease'], help="sort files by line number of it")
     parser.add_argument("--output", type=str, help="redirect output to file")
+    parser.add_argument("--glob", type=str, default='*', help="glob filter apply to files")
     
     args = parser.parse_args()
     if args.path is None:
         args.path = os.getcwd()
     else:
         args.path = os.path.abspath(args.path)
-    status(args.path)
+    status(args.path, args.glob)
     stat = output(args.sort, args.limit)
     if args.output is not None:
         dump(stat, args.output)
