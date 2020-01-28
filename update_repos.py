@@ -24,7 +24,7 @@ def pull(path):
 def pull_repos(path):
     path = os.path.abspath(path)
     for p in os.listdir(path):
-        if os.path.isdir(p):
+        if os.path.isdir(os.path.join(path, p)):
             pull(os.path.join(path, p))
 
 
