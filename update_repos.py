@@ -34,8 +34,9 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser()
     
-    parser.add_argument("--path", help="path")
+    parser.add_argument("--path", help="path, default to current directory")
 
     args = parser.parse_args()
-    
+    if args.path is None:
+        args.path = os.getcwd()
     pull_repos(args.path)
